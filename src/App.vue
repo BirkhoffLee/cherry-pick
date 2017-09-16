@@ -118,10 +118,6 @@
   }
 
   $(document).ready(function () {
-    // $('.ui.dropdown')
-    //   .dropdown()
-
-    // $('#seat-number-amounts').dropdown('set selected', 1)
   })
 </script>
 
