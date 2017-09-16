@@ -14,28 +14,28 @@
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.man.icon
-                  input(type='text', name='seat-number-from', placeholder='如：1', v-on:keypress='numberCheck()')
+                  input(type='text', name='seat-number-boy-from', placeholder='如：1', v-on:keypress='numberCheck()')
               .two.wide.field
                 .ui.labeled.input
                   .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.man.icon
-                  input(type='text', name='seat-number-to', placeholder='如：20', v-on:keypress='numberCheck()')
+                  input(type='text', name='seat-number-boy-to', placeholder='如：20', v-on:keypress='numberCheck()')
           .field
             label 女生座號範圍
             .fields
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.woman.icon
-                  input(type='text', name='seat-number-from', placeholder='如：21', v-on:keypress='numberCheck()')
+                  input(type='text', name='seat-number-girl-from', placeholder='如：21', v-on:keypress='numberCheck()')
               .two.wide.field
                 .ui.labeled.input
                   .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.woman.icon
-                  input(type='text', name='seat-number-to', placeholder='如：35', v-on:keypress='numberCheck()')
+                  input(type='text', name='seat-number-girl-to', placeholder='如：35', v-on:keypress='numberCheck()')
           .field
             label 幽靈座號（缺席座號）
             .three.fields
@@ -72,7 +72,7 @@
     h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
       | Copyright &copy; 2017 Birkhoff Lee.
       | &nbsp;
-      a(href="#") Source code
+      a(href="https://github.com/BirkhoffLee/cherry-pick") Source code
 </template>
 
 <script>
