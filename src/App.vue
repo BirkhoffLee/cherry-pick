@@ -1,60 +1,132 @@
-<template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <h1>{{ msg }}</h1>
-    <h2>Essential Links</h2>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://gitter.im/vuejs/vue" target="_blank">Gitter Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h2>Ecosystem</h2>
-    <ul>
-      <li><a href="http://router.vuejs.org/" target="_blank">vue-router</a></li>
-      <li><a href="http://vuex.vuejs.org/" target="_blank">vuex</a></li>
-      <li><a href="http://vue-loader.vuejs.org/" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
-  </div>
+<template lang="pug">
+  div#app
+
+    h1.ui.center.aligned.header 敲公平抽籤系統兒
+
+    Steps
+    
+    .ui.container(style="width: 30%")
+      .ui.segment
+        form.ui.form
+          .field
+            label 男生座號範圍
+            .fields
+              .seven.wide.field
+                .ui.labeled.left.icon.input
+                  i.man.icon
+                  input(type='text', name='seat-number-from', placeholder='如：1', v-on:keypress='numberCheck()')
+              .two.wide.field
+                .ui.labeled.input
+                  .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
+              .seven.wide.field
+                .ui.labeled.left.icon.input
+                  i.man.icon
+                  input(type='text', name='seat-number-to', placeholder='如：20', v-on:keypress='numberCheck()')
+          .field
+            label 女生座號範圍
+            .fields
+              .seven.wide.field
+                .ui.labeled.left.icon.input
+                  i.woman.icon
+                  input(type='text', name='seat-number-from', placeholder='如：21', v-on:keypress='numberCheck()')
+              .two.wide.field
+                .ui.labeled.input
+                  .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
+              .seven.wide.field
+                .ui.labeled.left.icon.input
+                  i.woman.icon
+                  input(type='text', name='seat-number-to', placeholder='如：35', v-on:keypress='numberCheck()')
+          .field
+            label 幽靈座號（缺席座號）
+            .three.fields
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
+            .three.fields
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
+            .three.fields
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
+              .field
+                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
+          .field
+            label 要抽多少個座號？
+            .ui.action.input
+              input(v-model='seatNumberAmounts', type='text', placeholder='輸入數量，或使用旁邊的按鈕', v-on:keypress='numberCheck()')
+              button#plusButton.ui.icon.positive.button(type='button', @click='addAmount')
+                i.plus.icon
+              button#minusButton.ui.icon.button(type='button', @click='minusAmount', disabled)
+                i.minus.icon
+      .ui.positive.fluid.button 變魔法吧！
+      
+    h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
+      | Copyright &copy; 2017 Birkhoff Lee.
+      | &nbsp;
+      a(href="#") Source code
 </template>
 
 <script>
-export default {
-  name: 'app',
-  data () {
-    return {
-      msg: 'Welcome to Your Vue.js App'
+  import Steps from './components/Steps'
+
+  export default {
+    components: {
+      Steps
+    },
+
+    data () {
+      return {
+        seatNumberAmounts: 1
+      }
+    },
+
+    methods: {
+      numberCheck: function (e) {
+        e = e || window.event
+        var charCode = (e.which) ? e.which : e.keyCode
+
+        if ((charCode > 31 && (charCode < 48 || charCode > 57)) && charCode !== 46) {
+          e.preventDefault()
+        }
+
+        return true
+      },
+
+      addAmount: function () {
+        this.seatNumberAmounts++
+
+        $('#minusButton').attr('disabled', false)
+      },
+
+      minusAmount: function () {
+        this.seatNumberAmounts--
+
+        if (this.seatNumberAmounts === 1) {
+          $('#minusButton').attr('disabled', true)
+        }
+      }
     }
   }
-}
+
+  $(document).ready(function () {
+    // $('.ui.dropdown')
+    //   .dropdown()
+
+    // $('#seat-number-amounts').dropdown('set selected', 1)
+  })
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
+  margin-top: 3em
 }
 </style>
