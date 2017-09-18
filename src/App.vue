@@ -5,7 +5,7 @@
 
     Steps
     
-    .ui.container(style="width: 30%")
+    .ui.container#form
       .ui.segment
         form.ui.form
           .field
@@ -14,51 +14,33 @@
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.man.icon
-                  input(type='text', name='seat-number-boy-from', placeholder='如：1', v-on:keypress='numberCheck()')
+                  input(type='text', v-model='seatNumberBoyFrom', placeholder='如：1', v-on:keypress='numberCheck()')
               .two.wide.field
                 .ui.labeled.input
-                  .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
+                  .ui.basic.label#label-to ~
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.man.icon
-                  input(type='text', name='seat-number-boy-to', placeholder='如：20', v-on:keypress='numberCheck()')
+                  input(type='text', v-model='seatNumberBoyTo', placeholder='如：20', v-on:keypress='numberCheck()')
           .field
             label 女生座號範圍
             .fields
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.woman.icon
-                  input(type='text', name='seat-number-girl-from', placeholder='如：21', v-on:keypress='numberCheck()')
+                  input(type='text', v-model='seatNumberGirlFrom', placeholder='如：21', v-on:keypress='numberCheck()')
               .two.wide.field
                 .ui.labeled.input
-                  .ui.basic.label(style="width: 100%; text-align: center; border: 0px") ~
+                  .ui.basic.label#label-to ~
               .seven.wide.field
                 .ui.labeled.left.icon.input
                   i.woman.icon
-                  input(type='text', name='seat-number-girl-to', placeholder='如：35', v-on:keypress='numberCheck()')
+                  input(type='text', v-model='seatNumberGirlTo', placeholder='如：35', v-on:keypress='numberCheck()')
           .field
             label 幽靈座號（缺席座號）
-            .three.fields
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
-            .three.fields
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
-            .three.fields
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：17', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-from', placeholder='如：28', v-on:keypress='numberCheck()')
-              .field
-                input(type='text', name='seat-number-to', placeholder='如：32', v-on:keypress='numberCheck()')
+            .three.fields(v-for="(i, j) in ghostSeatNumberRows")
+              .field(v-for="(k, l) in 3")
+                input(type='text', v-model='ghostSeatNumbers[j * ghostSeatNumberRows + l]', placeholder='如：17', v-on:keypress='numberCheck()')
           .field
             label 要抽多少個座號？
             .ui.action.input
@@ -85,7 +67,13 @@
 
     data () {
       return {
-        seatNumberAmounts: 1
+        seatNumberAmounts: 1,
+        ghostSeatNumberRows: 3,
+        ghostSeatNumbers: [],
+        seatNumberBoyFrom: null,
+        seatNumberBoyTo: null,
+        seatNumberGirlFrom: null,
+        seatNumberGirlTo: null
       }
     },
 
@@ -124,5 +112,15 @@
 <style>
 #app {
   margin-top: 3em
+}
+
+#form {
+  width: 30%
+}
+
+#label-to {
+  width: 100%;
+  text-align: center;
+  border: 0px
 }
 </style>
