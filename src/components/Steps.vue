@@ -1,7 +1,7 @@
 <template lang="pug">
   div.ui.container(style="padding-top: 1.5em; padding-bottom: 3em")
     div.ui.three.steps
-      div.active.step
+      div.active.step#settings-step
         i.settings.icon
         div.content
           div.title
@@ -9,7 +9,7 @@
           div.description
             | 設定籤筒
 
-      div.disabled.step
+      div.disabled.step#draw-step
         i.refresh.icon
         div.content
           div.title
@@ -17,7 +17,7 @@
           div.description
             | 等待我們變魔法
 
-      div.disabled.step
+      div.disabled.step#dala-step
         i.birthday.icon
         div.content
           div.title

@@ -49,8 +49,25 @@
                 i.plus.icon
               button#minusButton.ui.icon.button(type='button', @click='minusAmount', disabled)
                 i.minus.icon
-      .ui.positive.fluid.button(@click="calculate") 變魔法吧！
-      p {{ result }}
+      .ui.positive.fluid.button(@click="startDraw") 變魔法吧！
+
+    .ui.container#magic
+      .ui.segment
+        .loader-spin
+        h2.ui.center.aligned.header(style="margin-top: 4em; margin-bottom: 1.5em") 正在變黑魔法，請稍候
+
+    .ui.container#dala
+      .ui.segment
+        h1.ui.center.aligned.header(style="margin-top: .3em; margin-bottom: .5em; font-size: 8em") {{ partyPopperEmoji }} 搭拉！
+        .ui.three.column.grid
+          .centered.column(v-for="(seatNumber, index) in results")
+            .ui.fluid.card
+              .image
+                img(src='./assets/boy.png', v-if="isBoy(seatNumber)")
+                img(src='./assets/girl.png', v-else)
+              .content
+                a.header(v-if="isBoy(seatNumber)") {{ seatNumber }} 號男同學
+                a.header(v-else) {{ seatNumber }} 號女同學
 
     h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
       | Copyright &copy; 2017 Birkhoff Lee.
@@ -61,12 +78,12 @@
 <script>
   import Steps from './components/Steps'
 
-  let range = function (start, end) {
+  let range = (start, end) => {
     return Array(end - start + 1).fill().map((_, idx) => start + idx)
   }
 
-  let flattenArray = function (array) {
-    return array.reduce(function (a, b) {
+  let flattenArray = array => {
+    return array.reduce((a, b) => {
       return a.concat(b)
     }, [])
   }
@@ -96,7 +113,8 @@
         // seatNumberBoyTo: null,
         // seatNumberGirlFrom: null,
         // seatNumberGirlTo: null,
-        result: 0
+        results: null,
+        partyPopperEmoji: String.fromCodePoint(127881)
       }
     },
 
@@ -112,13 +130,13 @@
         return true
       },
 
-      addAmount: function () {
+      addAmount () {
         this.seatNumberAmounts++
 
         $('#minusButton').attr('disabled', false)
       },
 
-      minusAmount: function () {
+      minusAmount () {
         this.seatNumberAmounts--
 
         if (this.seatNumberAmounts === 1) {
@@ -126,17 +144,76 @@
         }
       },
 
-      calculate: function () {
+      calculate () {
+        let self = this
         let possibleSeatNumbers = []
+
         possibleSeatNumbers.push(range(parseInt(this.seatNumberBoyFrom), parseInt(this.seatNumberBoyTo)))
         possibleSeatNumbers.push(range(parseInt(this.seatNumberGirlFrom), parseInt(this.seatNumberGirlTo)))
 
         possibleSeatNumbers = flattenArray(possibleSeatNumbers)
+        possibleSeatNumbers = possibleSeatNumbers.filter((e) => !this.ghostSeatNumbers.map(Number).includes(e))
 
-        times(this.seatNumberAmounts)(() => {
+        Promise.all((new Array(parseInt(this.seatNumberAmounts)).fill('')).map(() => new Promise((resolve) => {
           let seatNumber = possibleSeatNumbers[Math.floor(Math.random() * possibleSeatNumbers.length)]
-          this.result = this.result + ', ' + seatNumber.toString()
+          resolve(seatNumber)
+        }))).then((result) => {
+          self.results = result
         })
+      },
+
+      startDraw () {
+        let self = this
+
+        $('#settings-step').addClass('disabled')
+        $('#settings-step').removeClass('active')
+        $('#draw-step').addClass('active')
+        $('#draw-step').removeClass('disabled')
+
+        $('#form').transition({
+          animation: 'fly left',
+          onComplete: function () {
+            $('#magic').transition({
+              animation: 'fly right',
+              onComplete: function () {
+                self.calculate()
+
+                setTimeout(function () {
+                  self.endDraw()
+                }, 1300)
+              }
+            })
+          }
+        })
+      },
+
+      endDraw () {
+        $('#draw-step').addClass('disabled')
+        $('#draw-step').removeClass('active')
+        $('#dala-step').addClass('active')
+        $('#dala-step').removeClass('disabled')
+
+        $('#magic').transition({
+          animation: 'fly left',
+          onComplete: function () {
+            $('#dala').transition({
+              animation: 'fly right'
+              // onComplete: function () {
+
+              // }
+            })
+          }
+        })
+      },
+
+      isBoy (number) {
+        if (number >= this.seatNumberBoyFrom && number <= this.seatNumberBoyTo) {
+          return true
+        } else if (number >= this.seatNumberGirlFrom && number <= this.seatNumberGirlTo) {
+          return false
+        }
+
+        return null
       }
     }
   }
@@ -154,9 +231,104 @@
   width: 30%
 }
 
+#magic {
+  width: 40%;
+  display: none
+}
+
+#dala {
+  width: 50%;
+  display: none
+}
+
 #label-to {
   width: 100%;
   text-align: center;
   border: 0px
+}
+
+.loader-spin * {
+	box-sizing: border-box;
+		-o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+}
+
+.loader-spin {
+	width: 1em;
+	height: 1em;
+	font-size: 188px;
+	position: relative;
+	display:block;
+	margin: 63px auto;
+}
+
+.loader-spin:before, .loader-spin:after {
+	content: "";
+	top: 0;
+	display: block;
+	width: 1em;
+	height: 1em;
+	position: absolute;
+	border-width: 0.5em;
+	border-style: double;
+	border-color: transparent;
+	border-radius: 1em;
+	box-sizing: border-box;
+		-o-box-sizing: border-box;
+		-ms-box-sizing: border-box;
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+	animation: spin 1.15s infinite;
+		-o-animation: spin 1.15s infinite;
+		-ms-animation: spin 1.15s infinite;
+		-webkit-animation: spin 1.15s infinite;
+		-moz-animation: spin 1.15s infinite;
+}
+
+.loader-spin:after {
+	left: 0;
+	border-left-color: rgb(0,0,0);
+}
+
+.loader-spin:before {
+	right: 0;
+	border-right-color: rgb(0,0,0);
+	animation-delay: -0.29s;
+		-o-animation-delay: -0.29s;
+		-ms-animation-delay: -0.29s;
+		-webkit-animation-delay: -0.29s;
+		-moz-animation-delay: -0.29s;
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(360deg);
+	}
+}
+
+@-o-keyframes spin {
+	from {
+		-o-transform: rotate(360deg);
+	}
+}
+
+@-ms-keyframes spin {
+	from {
+		-ms-transform: rotate(360deg);
+	}
+}
+
+@-webkit-keyframes spin {
+	from {
+		-webkit-transform: rotate(360deg);
+	}
+}
+
+@-moz-keyframes spin {
+	from {
+		-moz-transform: rotate(360deg);
+	}
 }
 </style>
