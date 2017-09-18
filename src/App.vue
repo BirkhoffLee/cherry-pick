@@ -54,7 +54,7 @@
     .ui.container#magic
       .ui.segment
         .loader-spin
-        h2.ui.center.aligned.header(style="margin-top: 4em; margin-bottom: 1.5em") 正在變黑魔法，請稍候
+        h2.ui.center.aligned.header(style="margin-top: 4em; margin-bottom: 1.5em") 正在施展黑魔法，請稍候 ……
 
     .ui.container#dala
       .ui.segment
