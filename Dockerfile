@@ -4,7 +4,7 @@ WORKDIR /app
 
 ADD . /app
 
-RUN npm run build
+RUN yarn install && yarn run build
 
 ADD ./docs /app/src/static
 
