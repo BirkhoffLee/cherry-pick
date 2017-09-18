@@ -58,9 +58,9 @@
 
     .ui.container#dala
       .ui.segment
-        h1.ui.center.aligned.header(style="margin-top: .3em; margin-bottom: .5em; font-size: 8em") {{ partyPopperEmoji }} 搭拉！
-        .ui.three.column.grid
-          .centered.column(v-for="(seatNumber, index) in results")
+        h2.ui.center.aligned.header(style="margin-top: .3em; margin-bottom: .5em; font-size: 6em") {{ partyPopperEmoji }} 搭拉！
+        .ui.three.column.grid(v-for="(resultsCol, index) in results")
+          .centered.column(v-for="(seatNumber, index) in resultsCol")
             .ui.fluid.card
               .image
                 img(src='./assets/boy.png', v-if="isBoy(seatNumber)")
@@ -93,6 +93,12 @@
       f()
       times(x - 1)(f)
     }
+  }
+
+  let unflatten = (arrayToUnflatten, unflattenLength) => {
+    return Promise.all(new Array(Math.ceil(arrayToUnflatten.length / unflattenLength)).fill('').map((_, index) => new Promise(resolve => {
+      resolve(arrayToUnflatten.slice(index * unflattenLength, index * unflattenLength + unflattenLength))
+    })))
   }
 
   export default {
@@ -157,9 +163,9 @@
         Promise.all((new Array(parseInt(this.seatNumberAmounts)).fill('')).map(() => new Promise((resolve) => {
           let seatNumber = possibleSeatNumbers[Math.floor(Math.random() * possibleSeatNumbers.length)]
           resolve(seatNumber)
-        }))).then((result) => {
-          self.results = result
-        })
+        })))
+        .then((result) => unflatten(result, 3))
+        .then((result) => { self.results = result })
       },
 
       startDraw () {
@@ -237,7 +243,7 @@
 }
 
 #dala {
-  width: 50%;
+  width: 45%;
   display: none
 }
 
