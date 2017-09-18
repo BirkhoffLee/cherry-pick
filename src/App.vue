@@ -4,7 +4,7 @@
     h1.ui.center.aligned.header 敲公平抽籤系統兒
 
     Steps
-    
+
     .ui.container#form
       .ui.segment
         form.ui.form
@@ -49,8 +49,9 @@
                 i.plus.icon
               button#minusButton.ui.icon.button(type='button', @click='minusAmount', disabled)
                 i.minus.icon
-      .ui.positive.fluid.button 變魔法吧！
-      
+      .ui.positive.fluid.button(@click="calculate") 變魔法吧！
+      p {{ result }}
+
     h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
       | Copyright &copy; 2017 Birkhoff Lee.
       | &nbsp;
@@ -59,6 +60,23 @@
 
 <script>
   import Steps from './components/Steps'
+
+  let range = function (start, end) {
+    return Array(end - start + 1).fill().map((_, idx) => start + idx)
+  }
+
+  let flattenArray = function (array) {
+    return array.reduce(function (a, b) {
+      return a.concat(b)
+    }, [])
+  }
+
+  let times = x => f => {
+    if (x > 0) {
+      f()
+      times(x - 1)(f)
+    }
+  }
 
   export default {
     components: {
@@ -70,10 +88,15 @@
         seatNumberAmounts: 1,
         ghostSeatNumberRows: 3,
         ghostSeatNumbers: [],
-        seatNumberBoyFrom: null,
-        seatNumberBoyTo: null,
-        seatNumberGirlFrom: null,
-        seatNumberGirlTo: null
+        seatNumberBoyFrom: 1,
+        seatNumberBoyTo: 20,
+        seatNumberGirlFrom: 21,
+        seatNumberGirlTo: 35,
+        // seatNumberBoyFrom: null,
+        // seatNumberBoyTo: null,
+        // seatNumberGirlFrom: null,
+        // seatNumberGirlTo: null,
+        result: 0
       }
     },
 
@@ -101,6 +124,19 @@
         if (this.seatNumberAmounts === 1) {
           $('#minusButton').attr('disabled', true)
         }
+      },
+
+      calculate: function () {
+        let possibleSeatNumbers = []
+        possibleSeatNumbers.push(range(parseInt(this.seatNumberBoyFrom), parseInt(this.seatNumberBoyTo)))
+        possibleSeatNumbers.push(range(parseInt(this.seatNumberGirlFrom), parseInt(this.seatNumberGirlTo)))
+
+        possibleSeatNumbers = flattenArray(possibleSeatNumbers)
+
+        times(this.seatNumberAmounts)(() => {
+          let seatNumber = possibleSeatNumbers[Math.floor(Math.random() * possibleSeatNumbers.length)]
+          this.result = this.result + ', ' + seatNumber.toString()
+        })
       }
     }
   }
