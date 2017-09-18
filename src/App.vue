@@ -66,8 +66,8 @@
                 img(src='./assets/boy.png', v-if="isBoy(seatNumber)")
                 img(src='./assets/girl.png', v-else)
               .content
-                a.header(v-if="isBoy(seatNumber)") {{ seatNumber }} 號男同學
-                a.header(v-else) {{ seatNumber }} 號女同學
+                p.header(v-if="isBoy(seatNumber)") {{ seatNumber }} 號男同學
+                p.header(v-else) {{ seatNumber }} 號女同學
 
     h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
       | Copyright &copy; 2017 Birkhoff Lee.
