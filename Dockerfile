@@ -1,10 +1,6 @@
 FROM birkhofflee/docker-simple-web-server:latest
 
-WORKDIR /app
-
-ADD . /app
-
-RUN yarn install && yarn run build
+WORKDIR /app/src/static
 
 ADD ./docs /app/src/static
 
