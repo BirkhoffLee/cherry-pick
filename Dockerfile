@@ -6,7 +6,7 @@ ADD . /root
 
 RUN npm install && \
     npm run build && \
-    cp -r ./dist/* /app/src/public
+    cp -rv ./dist/* /app/src/public
 
 WORKDIR /app
 EXPOSE 80
