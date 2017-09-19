@@ -69,10 +69,11 @@
                 p.header(v-if="isBoy(seatNumber)") {{ seatNumber }} 號男同學
                 p.header(v-else) {{ seatNumber }} 號女同學
 
-    h4.ui.center.aligned.header(style="margin-top: 3em; margin-bottom: 1.5em")
-      | Copyright &copy; 2017 Birkhoff Lee.
-      | &nbsp;
-      a(href="https://github.com/BirkhoffLee/cherry-pick") Source code
+    .ui.container
+      h4.ui.center.aligned.header(style="margin-top: 2.6em")
+        | Copyright &copy; 2017 Birkhoff Lee.
+        | &nbsp;
+        a(href="https://github.com/BirkhoffLee/cherry-pick") Source code
 </template>
 
 <script>
