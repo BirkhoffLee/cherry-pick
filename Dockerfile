@@ -6,8 +6,9 @@ ADD . /tmp
 
 RUN yarn install && \
     yarn run build && \
-    cp -r ./dist/* /app/src/static
+    cp -r ./dist/* /app/src/static && \
+    rm -rf /tmp/* /tmp/.*
 
-WORKDIR /app/src/static
+WORKDIR /app
 
 CMD ["node src/index.js"] 
