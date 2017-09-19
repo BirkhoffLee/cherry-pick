@@ -4,9 +4,9 @@ WORKDIR /root
 
 ADD . /root
 
-RUN yarn install && \
-    yarn run build && \
-    cp -r ./dist/* /app/src/static
+RUN npm install && \
+    npm run build && \
+    cp -r ./dist/* /app/src/public
 
 WORKDIR /app
 
