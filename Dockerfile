@@ -9,5 +9,6 @@ RUN npm install && \
     cp -r ./dist/* /app/src/public
 
 WORKDIR /app
+EXPOSE 80
 
 CMD ["node", "src/index.js"]
