@@ -58,7 +58,7 @@
 
     .ui.container#dala
       .ui.segment
-        h2.ui.center.aligned.header(style="margin-top: .3em; margin-bottom: .5em; font-size: 6em") {{ partyPopperEmoji }} 搭拉！
+        h1.ui.center.aligned.header(style="margin-top: .3em; margin-bottom: .5em") {{ partyPopperEmoji }} 搭拉！
         .ui.three.column.grid(v-for="(resultsCol, index) in results")
           .centered.column(v-for="(seatNumber, index) in resultsCol")
             .ui.fluid.card
