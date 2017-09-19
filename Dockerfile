@@ -1,14 +1,13 @@
 FROM birkhofflee/docker-simple-web-server:latest
 
-WORKDIR /tmp
+WORKDIR /root
 
-ADD . /tmp
+ADD . /root
 
 RUN yarn install && \
     yarn run build && \
-    cp -r ./dist/* /app/src/static && \
-    rm -rf /tmp/* /tmp/.*
+    cp -r ./dist/* /app/src/static
 
 WORKDIR /app
 
-CMD ["node src/index.js"] 
+CMD ["node src/index.js"]
