@@ -78,6 +78,40 @@
 <script>
   import Steps from './components/Steps'
 
+  let getRandomValue = (min, max) => {
+    let crypto = window.crypto || window.msCrypto
+
+    if (!crypto) {
+      console.warn('WARN: Using insecure random generator')
+
+      return Math.floor(Math.random() * (max - min) + min)
+    }
+
+    let range = max - min
+    let requestBytes = Math.ceil(Math.log2(range) / 8)
+
+    if (!requestBytes) {
+      return min
+    }
+
+    let maxNum = Math.pow(256, requestBytes)
+    let ar = new Uint8Array(requestBytes)
+
+    while (true) {
+      crypto.getRandomValues(ar)
+
+      let val = 0
+
+      for (let i = 0; i < requestBytes; i++) {
+        val = (val << 8) + ar[i]
+      }
+
+      if (val + range - (val % range) < maxNum) {
+        return Math.floor(min + (val % range))
+      }
+    }
+  }
+
   let range = (start, end) => {
     return Array(end - start + 1).fill().map((_, idx) => start + idx)
   }
@@ -102,7 +136,7 @@
     // While there are elements in the array
     while (counter > 0) {
       // Pick a random index
-      let index = Math.floor(Math.random() * counter)
+      let index = getRandomValue(0, counter)
 
       // Decrease counter by 1
       counter--
@@ -117,7 +151,7 @@
   }
 
   let unflatten = (arrayToUnflatten, unflattenLength) => {
-    return Promise.all(new Array(Math.ceil(arrayToUnflatten.length / unflattenLength)).fill('').map((_, index) => new Promise(resolve => {
+    return Promise.all(Array(Math.ceil(arrayToUnflatten.length / unflattenLength)).fill().map((_, index) => new Promise(resolve => {
       resolve(arrayToUnflatten.slice(index * unflattenLength, index * unflattenLength + unflattenLength))
     })))
   }
@@ -133,19 +167,33 @@
         ghostSeatNumberRows: 3,
         ghostSeatNumbers: [],
         seatNumberBoyFrom: 1,
-        seatNumberBoyTo: 20,
-        seatNumberGirlFrom: 21,
-        seatNumberGirlTo: 35,
-        // seatNumberBoyFrom: null,
-        // seatNumberBoyTo: null,
-        // seatNumberGirlFrom: null,
-        // seatNumberGirlTo: null,
+        seatNumberBoyTo: 22,
+        seatNumberGirlFrom: 31,
+        seatNumberGirlTo: 42,
+        maxSeatNumbersCanBeGenerated: null,
         results: null,
         partyPopperEmoji: String.fromCodePoint(127881)
       }
     },
 
     methods: {
+      calculateMaxSeatNumbersCanBeGenerated () {
+        let boyAmounts = parseInt(this.seatNumberBoyTo) - parseInt(this.seatNumberBoyFrom)
+        let girlAmounts = parseInt(this.seatNumberGirlTo) - parseInt(this.seatNumberGirlFrom)
+
+        boyAmounts = (boyAmounts === 0) ? 0 : boyAmounts + 1
+        girlAmounts = (girlAmounts === 0) ? 0 : girlAmounts + 1
+
+        this.maxSeatNumbersCanBeGenerated =
+          boyAmounts +
+          girlAmounts -
+          this.ghostSeatNumbers.filter(
+            el => (typeof el === 'string' || el instanceof String) && el.trim() !== ''
+            ).length
+
+        console.log(`The max seat numbers that can be generated is now ${this.maxSeatNumbersCanBeGenerated}`)
+      },
+
       numberCheck: function (e) {
         e = e || window.event
         var charCode = (e.which) ? e.which : e.keyCode
@@ -158,16 +206,23 @@
       },
 
       addAmount () {
-        this.seatNumberAmounts++
+        if (++this.seatNumberAmounts > 0) {
+          $('#minusButton').attr('disabled', false)
+        }
 
-        $('#minusButton').attr('disabled', false)
+        if (this.seatNumberAmounts >= this.maxSeatNumbersCanBeGenerated) {
+          $('#plusButton').attr('disabled', true)
+          this.seatNumberAmounts = this.maxSeatNumbersCanBeGenerated
+        }
       },
 
       minusAmount () {
-        this.seatNumberAmounts--
-
-        if (this.seatNumberAmounts === 1) {
+        if (--this.seatNumberAmounts === 1) {
           $('#minusButton').attr('disabled', true)
+        }
+
+        if (this.seatNumberAmounts <= this.maxSeatNumbersCanBeGenerated) {
+          $('#plusButton').attr('disabled', false)
         }
       },
 
@@ -179,15 +234,30 @@
         possibleSeatNumbers.push(range(parseInt(this.seatNumberGirlFrom), parseInt(this.seatNumberGirlTo)))
 
         possibleSeatNumbers = flattenArray(possibleSeatNumbers)
-        possibleSeatNumbers = possibleSeatNumbers.filter((e) => !this.ghostSeatNumbers.map(Number).includes(e))
+        possibleSeatNumbers = possibleSeatNumbers.filter(e => !this.ghostSeatNumbers.map(Number).includes(e))
+
+        console.log(`The possible seat numbers (${possibleSeatNumbers.length}): ${possibleSeatNumbers.join(', ')}`)
+
         possibleSeatNumbers = shuffle(possibleSeatNumbers)
 
-        Promise.all((new Array(parseInt(this.seatNumberAmounts)).fill('')).map(() => new Promise((resolve) => {
-          let seatNumber = possibleSeatNumbers[Math.floor(Math.random() * possibleSeatNumbers.length)]
-          resolve(seatNumber)
-        })))
-        .then((result) => unflatten(result, 3))
-        .then((result) => { self.results = result })
+        console.log(`Shuffled to: ${possibleSeatNumbers.join(', ')}`)
+
+        Promise.all(Array(parseInt(this.seatNumberAmounts)).fill().map(function () {
+          return new Promise(function (resolve) {
+            let randomIndex = getRandomValue(0, possibleSeatNumbers.length)
+            let seatNumber = possibleSeatNumbers[randomIndex]
+
+            console.log(`Got random seat number ${seatNumber}`)
+
+            // Remove the chosen seat number from the array to avoid duplicates
+            possibleSeatNumbers.splice(randomIndex, 1)
+
+            resolve(seatNumber)
+          })
+        }))
+        .then(result => console.log(`Final result: ${result.join(', ')}`))
+        .then(result => unflatten(result, 3))
+        .then(result => { self.results = result })
       },
 
       startDraw () {
@@ -243,11 +313,18 @@
 
         return null
       }
+    },
+
+    mounted () {
+      this.$nextTick(function () {
+        this.calculateMaxSeatNumbersCanBeGenerated()
+      })
+    },
+
+    updated () {
+      this.calculateMaxSeatNumbersCanBeGenerated()
     }
   }
-
-  $(document).ready(function () {
-  })
 </script>
 
 <style>
