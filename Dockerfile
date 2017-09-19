@@ -10,4 +10,4 @@ RUN yarn install && \
 
 WORKDIR /app
 
-CMD ["node src/index.js"]
+CMD ["bash -c 'node src/index.js'"]
