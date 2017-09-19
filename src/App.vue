@@ -247,7 +247,7 @@
             let randomIndex = getRandomValue(0, possibleSeatNumbers.length)
             let seatNumber = possibleSeatNumbers[randomIndex]
 
-            console.log(`Got random seat number ${seatNumber}`)
+            console.log(`Got random index ${randomIndex}, picking seat number ${seatNumber}`)
 
             // Remove the chosen seat number from the array to avoid duplicates
             possibleSeatNumbers.splice(randomIndex, 1)
