@@ -255,8 +255,10 @@
             resolve(seatNumber)
           })
         }))
-        .then(result => console.log(`Final result: ${result.join(', ')}`))
-        .then(result => unflatten(result, 3))
+        .then(result => {
+          console.log(`Final result: ${result.join(', ')}`)
+          return unflatten(result, 3)
+        })
         .then(result => { self.results = result })
       },
 
