@@ -95,6 +95,27 @@
     }
   }
 
+  // https://stackoverflow.com/a/6274398/2465955
+  let shuffle = array => {
+    let counter = array.length
+
+    // While there are elements in the array
+    while (counter > 0) {
+      // Pick a random index
+      let index = Math.floor(Math.random() * counter)
+
+      // Decrease counter by 1
+      counter--
+
+      // And swap the last element with it
+      let temp = array[counter]
+      array[counter] = array[index]
+      array[index] = temp
+    }
+
+    return array
+  }
+
   let unflatten = (arrayToUnflatten, unflattenLength) => {
     return Promise.all(new Array(Math.ceil(arrayToUnflatten.length / unflattenLength)).fill('').map((_, index) => new Promise(resolve => {
       resolve(arrayToUnflatten.slice(index * unflattenLength, index * unflattenLength + unflattenLength))
@@ -159,6 +180,7 @@
 
         possibleSeatNumbers = flattenArray(possibleSeatNumbers)
         possibleSeatNumbers = possibleSeatNumbers.filter((e) => !this.ghostSeatNumbers.map(Number).includes(e))
+        possibleSeatNumbers = shuffle(possibleSeatNumbers)
 
         Promise.all((new Array(parseInt(this.seatNumberAmounts)).fill('')).map(() => new Promise((resolve) => {
           let seatNumber = possibleSeatNumbers[Math.floor(Math.random() * possibleSeatNumbers.length)]
