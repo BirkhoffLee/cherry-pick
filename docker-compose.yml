@@ -1,0 +1,18 @@
+version: '3.1'
+
+services:
+
+  cherry-pick:
+    image: nginx
+    restart: unless-stopped
+    environment:
+      VIRTUAL_HOST: ${DOMAINS}
+      LETSENCRYPT_HOST: ${SSL_DOMAINS}
+      LETSENCRYPT_EMAIL: ${SSL_EMAIL}
+    volume:
+      - ./dist:/usr/share/nginx/html
+
+networks:
+    default:
+       external:
+         name: ${NETWORK}
