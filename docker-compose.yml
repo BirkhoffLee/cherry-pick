@@ -9,7 +9,7 @@ services:
       VIRTUAL_HOST: ${DOMAINS}
       LETSENCRYPT_HOST: ${SSL_DOMAINS}
       LETSENCRYPT_EMAIL: ${SSL_EMAIL}
-    volume:
+    volumes:
       - ./dist:/usr/share/nginx/html
 
 networks:
