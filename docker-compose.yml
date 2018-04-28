@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
 
-  cherry-pick:
+  web:
     image: nginx
     restart: unless-stopped
     environment:
