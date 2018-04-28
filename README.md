@@ -1,21 +1,16 @@
 # cherry-pick
 
-> A Vue.js project
+> A Vue.js project for drawing numbers on class (or any other scenarios)
 
-## Build Setup
+## Deployment
+
+Make sure Docker and docker-compose is properly installed.
 
 ``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
+git clone https://github.com/BirkhoffLee/cherry-pick
+cd cherry-pick
+chmod +x ./build.sh
+./build.sh
+docker-compose up -d
+docker-compose logs -f
 ```
-
-For detailed explanation on how things work, checkout the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
